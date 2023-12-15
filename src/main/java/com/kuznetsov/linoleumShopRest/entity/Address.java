@@ -30,9 +30,9 @@ public class Address extends BaseEntity<Integer>{
 
     @Builder.Default
     @OneToMany(mappedBy = "address")
-    private List<Order> orders = new ArrayList<>();
+    private List<OrderWithDeliveryAddress> orders = new ArrayList<>();
 
-    public void setOrders(List<Order> orders){
+    public void setOrders(List<OrderWithDeliveryAddress> orders){
         this.orders = orders;
         this.orders.forEach(order->order.setAddress(this));
     }

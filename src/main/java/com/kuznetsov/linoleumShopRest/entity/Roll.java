@@ -9,8 +9,9 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Data
+@ToString
 @EqualsAndHashCode(exclude = "linoleum",callSuper = true)
-public class Roll extends BaseEntity<Integer>{
+public class Roll extends AuditingEntity<Integer>{
 
     @Column(name = "part_num")
     private Integer partNum;

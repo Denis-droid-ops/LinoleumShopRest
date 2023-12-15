@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString(exclude = {"rolls","orders"})
 @EqualsAndHashCode(of = "lName")
-public class Linoleum extends BaseEntity<Integer>{
+public class Linoleum extends AuditingEntity<Integer>{
 
     @Column(name = "l_name",nullable = false,unique = true)
     private String lName;

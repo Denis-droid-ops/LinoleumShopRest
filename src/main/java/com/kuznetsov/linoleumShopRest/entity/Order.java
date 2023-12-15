@@ -15,7 +15,9 @@ import java.util.List;
 @Data
 @ToString(exclude = {"fragmentOrders"})
 @EqualsAndHashCode(exclude = {"user","linoleum","address","layout","fragmentOrders"},callSuper = true)
-public class Order extends BaseEntity<Integer>{
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type")
+public class Order extends AuditingEntity<Integer>{
 
     @Enumerated(value = EnumType.STRING)
     private OrderStatus status;
@@ -35,21 +37,7 @@ public class Order extends BaseEntity<Integer>{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "linoleum_id",referencedColumnName = "id")
     private Linoleum linoleum;
-
-    @Column(name = "apartment_num")
-    private Integer apartmentNum;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id",referencedColumnName = "id")
-    private Address address;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "layout_id",referencedColumnName = "id")
-    private Layout layout;
-
-    @Enumerated(value = EnumType.STRING)
-    private OrderType type;
-
+    
     @Builder.Default
     @OneToMany(mappedBy = "order")
     private List<FragmentOrder> fragmentOrders = new ArrayList<>();
@@ -62,16 +50,6 @@ public class Order extends BaseEntity<Integer>{
     public void setLinoleum(Linoleum linoleum){
         this.linoleum = linoleum;
         this.linoleum.getOrders().add(this);
-    }
-
-    public void setAddress(Address address){
-        this.address = address;
-        this.address.getOrders().add(this);
-    }
-
-    public void setLayout(Layout layout){
-        this.layout = layout;
-        this.layout.getOrders().add(this);
     }
 
 

@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @ToString(exclude = "orders")
 @EqualsAndHashCode(of = "email")
-public class User extends BaseEntity<Integer>{
+public class User extends AuditingEntity<Integer>{
 
     private String name;
 

@@ -37,7 +37,7 @@ public class Layout extends BaseEntity<Integer>{
 
     @Builder.Default
     @OneToMany(mappedBy = "layout")
-    private List<Order> orders = new ArrayList<>();
+    private List<OrderWithLayout> orders = new ArrayList<>();
 
     public void setAddress(Address address){
         this.address = address;
@@ -49,7 +49,7 @@ public class Layout extends BaseEntity<Integer>{
         this.layoutName.getLayouts().add(this);
     }
 
-    public void setOrders(List<Order> orders){
+    public void setOrders(List<OrderWithLayout> orders){
         this.orders = orders;
         this.orders.forEach(order -> order.setLayout(this));
     }
