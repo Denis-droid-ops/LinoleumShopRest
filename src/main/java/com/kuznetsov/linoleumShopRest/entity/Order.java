@@ -39,7 +39,7 @@ public class Order extends AuditingEntity<Integer>{
     private Linoleum linoleum;
     
     @Builder.Default
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<FragmentOrder> fragmentOrders = new ArrayList<>();
 
     public void setUser(User user){

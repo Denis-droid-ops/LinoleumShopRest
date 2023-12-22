@@ -2,6 +2,7 @@ package com.kuznetsov.linoleumShopRest.entity;
 
 import lombok.*;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -25,11 +26,11 @@ public class Address extends BaseEntity<Integer>{
     private String homeNum;
 
     @Builder.Default
-    @OneToMany(mappedBy = "address")
+    @OneToMany(mappedBy = "address",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Layout> layouts = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "address")
+    @OneToMany(mappedBy = "address",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<OrderWithDeliveryAddress> orders = new ArrayList<>();
 
     public void setOrders(List<OrderWithDeliveryAddress> orders){

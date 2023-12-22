@@ -36,7 +36,7 @@ public class Layout extends BaseEntity<Integer>{
     private LayoutName layoutName;
 
     @Builder.Default
-    @OneToMany(mappedBy = "layout")
+    @OneToMany(mappedBy = "layout", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<OrderWithLayout> orders = new ArrayList<>();
 
     public void setAddress(Address address){

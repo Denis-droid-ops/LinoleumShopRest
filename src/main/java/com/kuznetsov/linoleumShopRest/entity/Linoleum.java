@@ -2,6 +2,7 @@ package com.kuznetsov.linoleumShopRest.entity;
 
 import lombok.*;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -30,11 +31,11 @@ public class Linoleum extends AuditingEntity<Integer>{
     private String imagePath;
 
     @Builder.Default
-    @OneToMany(mappedBy = "linoleum")
+    @OneToMany(mappedBy = "linoleum",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Roll> rolls = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "linoleum")
+    @OneToMany(mappedBy = "linoleum",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
     private void setRolls(List<Roll> rolls){

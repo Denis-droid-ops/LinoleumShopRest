@@ -2,10 +2,7 @@ package com.kuznetsov.linoleumShopRest.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +20,11 @@ public class LayoutName extends BaseEntity<Integer>{
     private String lnName;
 
     @Builder.Default
-    @OneToMany(mappedBy = "layoutName")
+    @OneToMany(mappedBy = "layoutName",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Fragment> fragments = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "layoutName")
+    @OneToMany(mappedBy = "layoutName",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Layout> layouts = new ArrayList<>();
 
     public void setFragments(List<Fragment> fragments){

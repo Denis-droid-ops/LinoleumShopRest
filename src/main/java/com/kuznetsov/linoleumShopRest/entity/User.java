@@ -30,7 +30,7 @@ public class User extends AuditingEntity<Integer>{
     private Role role;
 
     @Builder.Default
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
     public void setOrders(List<Order> orders){

@@ -31,7 +31,7 @@ public class Fragment extends BaseEntity<Integer>{
     private LayoutName layoutName;
 
     @Builder.Default
-    @OneToMany(mappedBy = "fragment")
+    @OneToMany(mappedBy = "fragment",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<FragmentOrder> fragmentOrders = new ArrayList<>();
 
     public void setLayoutName(LayoutName layoutName){
