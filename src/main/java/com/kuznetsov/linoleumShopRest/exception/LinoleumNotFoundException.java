@@ -1,8 +1,5 @@
 package com.kuznetsov.linoleumShopRest.exception;
 
-
-
-
 public class LinoleumNotFoundException extends RuntimeException{
 
     public LinoleumNotFoundException() {

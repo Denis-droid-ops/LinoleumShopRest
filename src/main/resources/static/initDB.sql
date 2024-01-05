@@ -70,7 +70,7 @@ CREATE TABLE linoleum
     protect FLOAT4 NOT NULL,
     thickness FLOAT4 NOT NULL,
     price INTEGER NOT NULL,
-    image_path VARCHAR(100) NOT NULL
+    image_path VARCHAR(100) NOT NULL UNIQUE
 );
 
 

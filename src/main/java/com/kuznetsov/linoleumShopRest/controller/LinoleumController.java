@@ -2,15 +2,22 @@ package com.kuznetsov.linoleumShopRest.controller;
 
 import com.kuznetsov.linoleumShopRest.dto.CreateEditLinoleumDto;
 import com.kuznetsov.linoleumShopRest.dto.ReadLinoleumDto;
+import com.kuznetsov.linoleumShopRest.exception.ImageNotFoundException;
 import com.kuznetsov.linoleumShopRest.exception.LinoleumNotFoundException;
 import com.kuznetsov.linoleumShopRest.service.LinoleumService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
 
 import java.util.List;
+
 
 
 @RestController
@@ -24,16 +31,24 @@ public class LinoleumController {
         this.linoleumService = linoleumService;
     }
 
-    @PostMapping()
+    @PostMapping(consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReadLinoleumDto create(@RequestBody CreateEditLinoleumDto createEditLinoleumDto){
-        return linoleumService.save(createEditLinoleumDto);
+    public ResponseEntity<ReadLinoleumDto> create(@RequestPart CreateEditLinoleumDto createEditLinoleumDto, @RequestPart MultipartFile image){
+        createEditLinoleumDto.setImage(image);
+        return ResponseEntity.created(ServletUriComponentsBuilder
+                .fromCurrentRequestUri()
+                .build()
+                .toUri())
+                .body(linoleumService.save(createEditLinoleumDto));
     }
 
-    @PutMapping("/{id}")
-    public ReadLinoleumDto update(@PathVariable("id") Integer id,
-                                             @RequestBody CreateEditLinoleumDto createEditLinoleumDto){
+    @PutMapping(value = "/{id}",consumes = "multipart/form-data")
+    public ResponseEntity<ReadLinoleumDto> update(@PathVariable("id") Integer id,
+                                             @RequestPart CreateEditLinoleumDto createEditLinoleumDto,
+                                             @RequestPart MultipartFile image){
+        createEditLinoleumDto.setImage(image);
         return linoleumService.update(id,createEditLinoleumDto)
+                .map(readLinoleumDto -> ResponseEntity.ok(readLinoleumDto))
                 .orElseThrow(()->new LinoleumNotFoundException());
     }
 
@@ -43,17 +58,28 @@ public class LinoleumController {
     }
 
     @GetMapping("/{id}")
-    public ReadLinoleumDto findById(@PathVariable("id") Integer id){
+    public ResponseEntity<ReadLinoleumDto> findById(@PathVariable("id") Integer id){
         return linoleumService.findById(id)
+                .map(readLinoleumDto -> ResponseEntity.ok(readLinoleumDto))
                 .orElseThrow(()->new LinoleumNotFoundException());
     }
 
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") Integer id) {
+        return linoleumService.getImage(id)
+                .map(img->ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                        .contentLength(img.length)
+                        .body(img))
+                .orElseThrow(()->new ImageNotFoundException());
+    }
+
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable("id") Integer id){
+    public ResponseEntity<?> delete(@PathVariable("id") Integer id){
         if(!linoleumService.delete(id)){
             throw new LinoleumNotFoundException();
         }
+        return ResponseEntity.noContent().build();
     }
 
 
