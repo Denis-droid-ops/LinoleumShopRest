@@ -1,11 +1,15 @@
 package com.kuznetsov.linoleumShopRest.controller;
 
 import com.kuznetsov.linoleumShopRest.dto.CreateEditLinoleumDto;
+import com.kuznetsov.linoleumShopRest.dto.LinoleumFilter;
+import com.kuznetsov.linoleumShopRest.dto.PageResponse;
 import com.kuznetsov.linoleumShopRest.dto.ReadLinoleumDto;
 import com.kuznetsov.linoleumShopRest.exception.ImageNotFoundException;
 import com.kuznetsov.linoleumShopRest.exception.LinoleumNotFoundException;
 import com.kuznetsov.linoleumShopRest.service.LinoleumService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,10 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-
-
-import java.util.List;
 
 
 
@@ -48,20 +48,21 @@ public class LinoleumController {
                                              @RequestPart MultipartFile image){
         createEditLinoleumDto.setImage(image);
         return linoleumService.update(id,createEditLinoleumDto)
-                .map(readLinoleumDto -> ResponseEntity.ok(readLinoleumDto))
-                .orElseThrow(()->new LinoleumNotFoundException());
+                .map(ResponseEntity::ok)
+                .orElseThrow(LinoleumNotFoundException::new);
     }
 
     @GetMapping()
-    public List<ReadLinoleumDto> findAll(){
-        return linoleumService.findAll();
+    public PageResponse<ReadLinoleumDto> findAll(@RequestBody(required = false) LinoleumFilter filter,Pageable pageable){
+        Page<ReadLinoleumDto> page = linoleumService.findAll(filter,pageable);
+        return PageResponse.of(page);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ReadLinoleumDto> findById(@PathVariable("id") Integer id){
         return linoleumService.findById(id)
-                .map(readLinoleumDto -> ResponseEntity.ok(readLinoleumDto))
-                .orElseThrow(()->new LinoleumNotFoundException());
+                .map(ResponseEntity::ok)
+                .orElseThrow(LinoleumNotFoundException::new);
     }
 
     @GetMapping("/{id}/image")
@@ -71,7 +72,7 @@ public class LinoleumController {
                         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
                         .contentLength(img.length)
                         .body(img))
-                .orElseThrow(()->new ImageNotFoundException());
+                .orElseThrow(ImageNotFoundException::new);
     }
 
     @DeleteMapping("/{id}")

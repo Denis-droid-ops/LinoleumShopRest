@@ -1,20 +1,28 @@
 package com.kuznetsov.linoleumShopRest.service;
 
 import com.kuznetsov.linoleumShopRest.dto.CreateEditLinoleumDto;
+import com.kuznetsov.linoleumShopRest.dto.LinoleumFilter;
 import com.kuznetsov.linoleumShopRest.dto.ReadLinoleumDto;
+
+import com.kuznetsov.linoleumShopRest.entity.Linoleum;
 
 import com.kuznetsov.linoleumShopRest.mapper.LinoleumMapper;
 import com.kuznetsov.linoleumShopRest.repository.LinoleumRepository;
+
+import com.kuznetsov.linoleumShopRest.util.QPredicates;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import java.util.List;
 import java.util.Optional;
+
+import static com.kuznetsov.linoleumShopRest.entity.QLinoleum.linoleum;
 
 
 @Service
@@ -39,8 +47,8 @@ public class LinoleumService {
                     uploadImage(dto.getImage());
                     return linoleumMapper.mapToLinoleum(createEditLinoleumDto);
                 })
-                .map(linoleum -> linoleumRepository.save(linoleum))
-                .map(saved->linoleumMapper.mapToReadLinoleumDto(saved))
+                .map(linoleumRepository::save)
+                .map(linoleumMapper::mapToReadLinoleumDto)
                 .orElseThrow();
 
     }
@@ -55,9 +63,9 @@ public class LinoleumService {
     @SneakyThrows
     public Optional<byte[]> getImage(Integer id) {
        return linoleumRepository.findById(id)
-               .map(linoleum -> linoleum.getImagePath())
-               .filter(imagePath->StringUtils.hasText(imagePath))
-               .flatMap(imagePath->imageService.get(imagePath));
+               .map(Linoleum::getImagePath)
+               .filter(StringUtils::hasText)
+               .flatMap(imageService::get);
     }
 
     @SneakyThrows
@@ -75,18 +83,29 @@ public class LinoleumService {
                     uploadImage(createEditLinoleumDto.getImage());
                     return linoleumMapper.updateLinoleumFromDto(createEditLinoleumDto,linoleum);
                 })
-                .map(linoleum -> linoleumRepository.saveAndFlush(linoleum))
+                .map(linoleumRepository::saveAndFlush)
                 //saveAndFlush используется чтобы сразу отследить исключения
-                .map(saved->linoleumMapper.mapToReadLinoleumDto(saved));
+                .map(linoleumMapper::mapToReadLinoleumDto);
     }
 
     public Optional<ReadLinoleumDto> findById(Integer id){
         return linoleumRepository.findById(id)
-                .map(linoleum -> linoleumMapper.mapToReadLinoleumDto(linoleum));
+                .map(linoleumMapper::mapToReadLinoleumDto);
     }
 
-    public List<ReadLinoleumDto> findAll(){
-        return linoleumMapper.entitiesToDtos(linoleumRepository.findAll());
+    public Page<ReadLinoleumDto> findAll(LinoleumFilter filter,Pageable pageable){
+        if(filter==null) {
+            return linoleumRepository.findAll(pageable).map(linoleumMapper::mapToReadLinoleumDto);
+        }
+        return linoleumRepository.findAll(QPredicates.builder()
+                        .add(filter.getName(), linoleum.lName::containsIgnoreCase)
+                        .add(filter.getProtect(), linoleum.protect::eq)
+                        .add(filter.getThickness(),linoleum.thickness::eq)
+                        .add(Optional.ofNullable(filter.getMinPrice()).orElse(0),
+                                Optional.ofNullable(filter.getMaxPrice()).orElse(Integer.MAX_VALUE),
+                                linoleum.price::between)
+                        .build(),pageable)
+                        .map(linoleumMapper::mapToReadLinoleumDto);
     }
 
     @Transactional
