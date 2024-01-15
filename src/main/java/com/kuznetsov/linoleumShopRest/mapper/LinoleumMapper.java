@@ -11,11 +11,10 @@ import org.mapstruct.Named;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Mapper(componentModel = "spring")
 public interface LinoleumMapper {
-
 
     @Mapping(source = "createEditLinoleumDto.image", target = "imagePath",qualifiedByName = "castToImagePath")
     @Mapping(source = "createEditLinoleumDto.LName", target = "lName")

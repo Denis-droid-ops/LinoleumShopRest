@@ -67,9 +67,9 @@ CREATE TABLE linoleum
 (
     id     SERIAL PRIMARY KEY,
     l_name  VARCHAR(50) NOT NULL UNIQUE,
-    protect FLOAT4 NOT NULL,
-    thickness FLOAT4 NOT NULL,
-    price INTEGER NOT NULL,
+    protect FLOAT4 NOT NULL CHECK (protect<=1),
+    thickness FLOAT4 NOT NULL CHECK ( thickness>=1 AND thickness<=5),
+    price INTEGER NOT NULL CHECK (price>=400 AND price<=3000),
     image_path VARCHAR(100) NOT NULL UNIQUE
 );
 

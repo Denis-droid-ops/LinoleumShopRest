@@ -93,6 +93,16 @@ public class LinoleumService {
                 .map(linoleumMapper::mapToReadLinoleumDto);
     }
 
+    public Optional<ReadLinoleumDto> findByLName(String lName){
+        return linoleumRepository.findBylName(lName)
+                .map(linoleumMapper::mapToReadLinoleumDto);
+    }
+
+    public Optional<ReadLinoleumDto> findByImageName(String imageName){
+        return linoleumRepository.findByImagePath(imageName)
+                .map(linoleumMapper::mapToReadLinoleumDto);
+    }
+
     public Page<ReadLinoleumDto> findAll(LinoleumFilter filter,Pageable pageable){
         if(filter==null) {
             return linoleumRepository.findAll(pageable).map(linoleumMapper::mapToReadLinoleumDto);
