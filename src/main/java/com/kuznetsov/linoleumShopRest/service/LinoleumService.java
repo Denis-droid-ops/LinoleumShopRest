@@ -12,12 +12,17 @@ import com.kuznetsov.linoleumShopRest.repository.LinoleumRepository;
 import com.kuznetsov.linoleumShopRest.util.QPredicates;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 
 
 import java.util.Optional;
@@ -33,14 +38,16 @@ public class LinoleumService {
     private final LinoleumMapper linoleumMapper;
     private final ImageService imageService;
 
+
     @Autowired
-    public LinoleumService(LinoleumRepository linoleumRepository, LinoleumMapper linoleumMapper, ImageService imageService) {
+    public LinoleumService(LinoleumRepository linoleumRepository, LinoleumMapper linoleumMapper, ImageService imageService, ApplicationContext applicationContext) {
         this.linoleumRepository = linoleumRepository;
         this.linoleumMapper = linoleumMapper;
         this.imageService = imageService;
     }
 
     @Transactional
+    @CachePut(cacheNames = "readLinoleumDto", key = "#result.id")
     public ReadLinoleumDto save(CreateEditLinoleumDto createEditLinoleumDto){
         return Optional.of(createEditLinoleumDto)
                 .map(dto->{
@@ -76,6 +83,7 @@ public class LinoleumService {
     }
 
     @Transactional
+    @CachePut(cacheNames = "readLinoleumDto", key = "#id")
     public Optional<ReadLinoleumDto> update(Integer id,CreateEditLinoleumDto createEditLinoleumDto){
         return linoleumRepository.findById(id)
                 .map(linoleum->{
@@ -88,6 +96,7 @@ public class LinoleumService {
                 .map(linoleumMapper::mapToReadLinoleumDto);
     }
 
+    @Cacheable(cacheNames = "readLinoleumDto", key = "#id")
     public Optional<ReadLinoleumDto> findById(Integer id){
         return linoleumRepository.findById(id)
                 .map(linoleumMapper::mapToReadLinoleumDto);
@@ -119,6 +128,7 @@ public class LinoleumService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "readLinoleumDto")
     public boolean delete(Integer id){
         return linoleumRepository.findById(id)
                 .map(linoleum -> {

@@ -7,10 +7,21 @@ spring:
   jpa:
     properties:
       hibernate:
+        generate_statistics: true
+        javax.cache:
+           provider: org.ehcache.jsr107.EhcacheCachingProvider
+           uri: classpath:ehcache.xml
+        cache:
+          use_second_level_cache: false
+          use_query_cache: false
+          region:
+            factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
         dialect: org.hibernate.dialect.PostgreSQLDialect
         show_sql: true
+        format_sql: true
     open-in-view: false
 server:
   port: 8080
   error:
     include-message: always
+

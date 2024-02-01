@@ -30,6 +30,6 @@ public class LinoleumValidator implements Validator {
                         errors.rejectValue("lName","","Linoleum name is already taken! Must be unique!"));
         linoleumService.findByImageName(createEditLinoleumDto.getImage().getOriginalFilename())
                 .ifPresent(readLinoleumDto ->
-                        errors.rejectValue("image","","Image path is already used. Must be unique!"));
+                        errors.rejectValue("image","","Image path is already use! Must be unique!"));
     }
 }

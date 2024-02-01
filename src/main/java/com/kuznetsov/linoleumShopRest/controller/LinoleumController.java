@@ -10,6 +10,7 @@ import com.kuznetsov.linoleumShopRest.exception.LinoleumValidationException;
 import com.kuznetsov.linoleumShopRest.service.LinoleumService;
 import com.kuznetsov.linoleumShopRest.validator.LinoleumValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -27,13 +28,14 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/linoleums")
+//TODO:add hibernate envers(audit with revision)
 public class LinoleumController {
 
     private final LinoleumService linoleumService;
     private final LinoleumValidator linoleumValidator;
 
     @Autowired
-    public LinoleumController(LinoleumService linoleumService, LinoleumValidator linoleumValidator) {
+    public LinoleumController(LinoleumService linoleumService, LinoleumValidator linoleumValidator, ApplicationContext applicationContext) {
         this.linoleumService = linoleumService;
         this.linoleumValidator = linoleumValidator;
     }

@@ -1,11 +1,10 @@
 package com.kuznetsov.linoleumShopRest.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 @ToString(exclude = {"rolls","orders"})
 @EqualsAndHashCode(of = "lName")
+//Use Spring cache
+//NONSTRICT_READ_WRITE так как данные обновляются редко(каталог линолеумов)
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE,region = "Linoleums")
 public class Linoleum extends AuditingEntity<Integer>{
 
     @Column(name = "l_name",nullable = false,unique = true)
