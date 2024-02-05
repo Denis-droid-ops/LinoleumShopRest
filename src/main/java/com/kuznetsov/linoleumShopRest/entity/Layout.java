@@ -22,9 +22,11 @@ public class Layout extends BaseEntity<Integer>{
     private String layoutImg;
 
     @Column(name = "row_type")
+    @Enumerated(value = EnumType.STRING)
     private LayoutRowType rowType;
 
     @Column(name = "l_type")
+    @Enumerated(value = EnumType.STRING)
     private LayoutType lType;
 
     @ManyToOne(fetch = FetchType.LAZY)

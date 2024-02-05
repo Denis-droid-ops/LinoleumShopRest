@@ -1,5 +1,6 @@
 package com.kuznetsov.linoleumShopRest.service;
 
+import com.kuznetsov.linoleumShopRest.dto.RevisionDto;
 import com.kuznetsov.linoleumShopRest.dto.CreateEditLinoleumDto;
 import com.kuznetsov.linoleumShopRest.dto.LinoleumFilter;
 import com.kuznetsov.linoleumShopRest.dto.ReadLinoleumDto;
@@ -11,21 +12,31 @@ import com.kuznetsov.linoleumShopRest.repository.LinoleumRepository;
 
 import com.kuznetsov.linoleumShopRest.util.QPredicates;
 import lombok.SneakyThrows;
+import org.hibernate.Hibernate;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.RevisionType;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.history.Revision;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 
-
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.kuznetsov.linoleumShopRest.entity.QLinoleum.linoleum;
 
@@ -38,9 +49,12 @@ public class LinoleumService {
     private final LinoleumMapper linoleumMapper;
     private final ImageService imageService;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
 
     @Autowired
-    public LinoleumService(LinoleumRepository linoleumRepository, LinoleumMapper linoleumMapper, ImageService imageService, ApplicationContext applicationContext) {
+    public LinoleumService(LinoleumRepository linoleumRepository, LinoleumMapper linoleumMapper, ImageService imageService) {
         this.linoleumRepository = linoleumRepository;
         this.linoleumMapper = linoleumMapper;
         this.imageService = imageService;
@@ -137,4 +151,34 @@ public class LinoleumService {
                     return true;
                 }).orElse(false);
     }
+
+
+    public Optional<Revision<Long, Linoleum>> findRevisionByLinoleumIdAndRevNum(Integer linoleumId, Long revisionNumber){
+        return linoleumRepository.findRevision(linoleumId,revisionNumber);
+    }
+
+    public Page<Revision<Long, Linoleum>> findAllRevisionsByLinoleumId(Integer linoleumId,Pageable pageable){
+        return linoleumRepository.findRevisions(linoleumId,pageable);
+    }
+
+    public List<RevisionDto> findAllRevisions(){
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        AuditQuery query = auditReader.createQuery()
+                .forRevisionsOfEntity(Linoleum.class, false, true);
+        List<Object[]> objects = query.getResultList();
+        List<RevisionDto> revisionDtos = new ArrayList<>();
+        objects.stream()
+                .forEach(obj->
+                        revisionDtos.add(
+                                new RevisionDto((Linoleum) obj[0],
+                                        (com.kuznetsov.linoleumShopRest.entity.Revision) Hibernate.unproxy(obj[1]),
+                                        (RevisionType) obj[2])
+                        ));
+        List<RevisionDto> sortedRevisionDtos = revisionDtos.stream()
+                .sorted(Comparator.comparing(revDto->revDto.getLinoleum().getId()))
+                .collect(Collectors.toList());
+        return sortedRevisionDtos;
+    }
+
+
 }

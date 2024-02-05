@@ -23,6 +23,7 @@ public class Order extends AuditingEntity<Integer>{
     private OrderStatus status;
 
     @Column(name = "transporting_type")
+    @Enumerated(EnumType.STRING)
     private OrderTransporting transportingType;
 
     @Column(name = "transporting_date")

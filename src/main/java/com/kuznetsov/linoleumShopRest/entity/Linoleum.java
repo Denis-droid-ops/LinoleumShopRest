@@ -3,6 +3,9 @@ package com.kuznetsov.linoleumShopRest.entity;
 import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,7 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 @ToString(exclude = {"rolls","orders"})
 @EqualsAndHashCode(of = "lName")
-//Use Spring cache
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+//Используется Spring cache
 //NONSTRICT_READ_WRITE так как данные обновляются редко(каталог линолеумов)
 //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE,region = "Linoleums")
 public class Linoleum extends AuditingEntity<Integer>{
@@ -34,10 +38,12 @@ public class Linoleum extends AuditingEntity<Integer>{
 
     @Builder.Default
     @OneToMany(mappedBy = "linoleum",cascade = CascadeType.ALL,orphanRemoval = true)
+    @NotAudited
     private List<Roll> rolls = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "linoleum",cascade = CascadeType.ALL,orphanRemoval = true)
+    @NotAudited
     private List<Order> orders = new ArrayList<>();
 
     private void setRolls(List<Roll> rolls){
