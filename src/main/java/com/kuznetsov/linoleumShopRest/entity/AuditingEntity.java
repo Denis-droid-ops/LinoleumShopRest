@@ -1,8 +1,11 @@
 package com.kuznetsov.linoleumShopRest.entity;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.data.annotation.CreatedBy;
@@ -34,4 +37,6 @@ public abstract class AuditingEntity<T extends Serializable> extends BaseEntity<
 
     @LastModifiedBy
     private String modifiedBy;
+
+
 }

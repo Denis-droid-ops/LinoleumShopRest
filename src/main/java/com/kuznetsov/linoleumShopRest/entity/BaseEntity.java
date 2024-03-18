@@ -1,8 +1,6 @@
 package com.kuznetsov.linoleumShopRest.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,9 +11,10 @@ import java.io.Serializable;
 @MappedSuperclass
 @Getter
 @Setter
-@EqualsAndHashCode()
+@EqualsAndHashCode
 public abstract class BaseEntity<T extends Serializable>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private T id;
+    protected T id;
+
 }
