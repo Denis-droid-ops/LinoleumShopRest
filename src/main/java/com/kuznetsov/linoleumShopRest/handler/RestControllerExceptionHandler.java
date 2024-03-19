@@ -33,7 +33,7 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
 
     @ExceptionHandler
     public ResponseEntity<LinoleumValidationErrorResponse> handleException(LinoleumValidationException ex){
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("Error! ");
         ex.getBindingResult().getFieldErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .forEach(message->sb.append(message).append("   "));

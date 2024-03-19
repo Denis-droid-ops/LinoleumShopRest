@@ -60,6 +60,9 @@ public class LinoleumController {
                                              BindingResult bindingResult,
                                              @RequestPart MultipartFile image){
         createEditLinoleumDto.setImage(image);
+        if(bindingResult.hasErrors()){
+            throw new LinoleumValidationException(bindingResult);
+        }
         return linoleumService.update(id,createEditLinoleumDto)
                 .map(ResponseEntity::ok)
                 .orElseThrow(LinoleumNotFoundException::new);

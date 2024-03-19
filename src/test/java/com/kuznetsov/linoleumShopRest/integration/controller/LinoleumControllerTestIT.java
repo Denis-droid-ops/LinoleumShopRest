@@ -90,7 +90,7 @@ class LinoleumControllerTestIT {
                 )
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof LinoleumValidationException))
                 .andExpect(jsonPath("$.message")
-                        .value("Linoleum name is already taken! Must be unique!   " +
+                        .value("Error! Linoleum name is already taken! Must be unique!   " +
                                 "Image path is already use! Must be unique!   "));
     }
 
