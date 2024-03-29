@@ -2,12 +2,14 @@ package com.kuznetsov.linoleumShopRest.validator;
 
 import com.kuznetsov.linoleumShopRest.dto.CreateEditLinoleumDto;
 import com.kuznetsov.linoleumShopRest.service.LinoleumService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 @Component
+@Slf4j
 public class LinoleumValidator implements Validator {
 
     private final LinoleumService linoleumService;
@@ -24,6 +26,7 @@ public class LinoleumValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+        log.info("Start spring validating, object is {}",target);
         CreateEditLinoleumDto createEditLinoleumDto = (CreateEditLinoleumDto) target;
         linoleumService.findByLName(createEditLinoleumDto.getLName())
                 .ifPresent(readLinoleumDto ->

@@ -12,6 +12,7 @@ import com.kuznetsov.linoleumShopRest.repository.LinoleumRepository;
 
 import com.kuznetsov.linoleumShopRest.util.QPredicates;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -43,6 +44,7 @@ import static com.kuznetsov.linoleumShopRest.entity.QLinoleum.linoleum;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class LinoleumService {
     
     private final LinoleumRepository linoleumRepository;
@@ -63,6 +65,7 @@ public class LinoleumService {
     @Transactional
     @CachePut(cacheNames = "readLinoleumDto", key = "#result.id")
     public ReadLinoleumDto save(CreateEditLinoleumDto createEditLinoleumDto){
+        log.info("Start linoleum saving, createEditLinoleumDto is {}",createEditLinoleumDto);
         return Optional.of(createEditLinoleumDto)
                 .map(dto->{
                     uploadImage(dto.getImage());
@@ -99,6 +102,7 @@ public class LinoleumService {
     @Transactional
     @CachePut(cacheNames = "readLinoleumDto", key = "#id")
     public Optional<ReadLinoleumDto> update(Integer id,CreateEditLinoleumDto createEditLinoleumDto){
+        log.info("Start linoleum updating, id is {},createEditLinoleumDto is {}",id,createEditLinoleumDto);
         return linoleumRepository.findById(id)
                 .map(linoleum->{
                     deleteImage(linoleum.getImagePath());
@@ -112,21 +116,25 @@ public class LinoleumService {
 
     @Cacheable(cacheNames = "readLinoleumDto", key = "#id")
     public Optional<ReadLinoleumDto> findById(Integer id){
+        log.info("Start linoleum finding by.., id is {}",id);
         return linoleumRepository.findById(id)
                 .map(linoleumMapper::mapToReadLinoleumDto);
     }
 
     public Optional<ReadLinoleumDto> findByLName(String lName){
+        log.info("Start linoleum finding by.., lName is {}",lName);
         return linoleumRepository.findBylName(lName)
                 .map(linoleumMapper::mapToReadLinoleumDto);
     }
 
     public Optional<ReadLinoleumDto> findByImageName(String imageName){
+        log.info("Start linoleum finding by.., imageName is {}",imageName);
         return linoleumRepository.findByImagePath(imageName)
                 .map(linoleumMapper::mapToReadLinoleumDto);
     }
 
     public Page<ReadLinoleumDto> findAll(LinoleumFilter filter,Pageable pageable){
+        log.info("Start all linoleums finding, filter is {}, pageable is {}",filter,pageable);
         if(filter==null) {
             return linoleumRepository.findAll(pageable).map(linoleumMapper::mapToReadLinoleumDto);
         }
@@ -144,6 +152,7 @@ public class LinoleumService {
     @Transactional
     @CacheEvict(cacheNames = "readLinoleumDto")
     public boolean delete(Integer id){
+        log.info("Start linoleum deleting, id is {}",id);
         return linoleumRepository.findById(id)
                 .map(linoleum -> {
                     linoleumRepository.delete(linoleum);
@@ -154,14 +163,17 @@ public class LinoleumService {
 
 
     public Optional<Revision<Long, Linoleum>> findRevisionByLinoleumIdAndRevNum(Integer linoleumId, Long revisionNumber){
+        log.info("Start all revisions finding by.., id is {}, revision number is {}",linoleumId,revisionNumber);
         return linoleumRepository.findRevision(linoleumId,revisionNumber);
     }
 
     public Page<Revision<Long, Linoleum>> findAllRevisionsByLinoleumId(Integer linoleumId,Pageable pageable){
+        log.info("Start all revisions finding by.., id is {}, pageable is {}",linoleumId,pageable);
         return linoleumRepository.findRevisions(linoleumId,pageable);
     }
 
     public List<RevisionDto> findAllRevisions(){
+        log.info("Start all revisions finding");
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         AuditQuery query = auditReader.createQuery()
                 .forRevisionsOfEntity(Linoleum.class, false, true);

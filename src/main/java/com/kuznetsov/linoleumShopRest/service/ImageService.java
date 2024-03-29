@@ -1,6 +1,7 @@
 package com.kuznetsov.linoleumShopRest.service;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class ImageService {
 
     @Value("${app.spring.bucket:/Users/Denis/IdeaProjects/LinoleumShopRest/image}")
@@ -23,6 +25,7 @@ public class ImageService {
     @SneakyThrows
     @Transactional
     public void upload(String imagePath, InputStream image) {
+        log.info("Start image uploading, imagePath is {}",imagePath);
         Path imageFullPath = Path.of(bucket,imagePath);
         try (image){
             Files.createDirectories(imageFullPath.getParent());
@@ -33,6 +36,7 @@ public class ImageService {
 
     @SneakyThrows
     public Optional<byte[]> get(String imagePath) {
+        log.info("Start image getting, imagePath is {}",imagePath);
         Path imageFullPath = Path.of(bucket,imagePath);
         if(Files.exists(imageFullPath)){
             return Optional.of(Files.readAllBytes(imageFullPath));
@@ -44,6 +48,7 @@ public class ImageService {
     @SneakyThrows
     @Transactional
     public void delete(String imagePath) {
+        log.info("Start image deleting, imagePath is {}",imagePath);
         Path imageFullPath = Path.of(bucket,imagePath);
         if(Files.exists(imageFullPath)){
             Files.delete(imageFullPath);

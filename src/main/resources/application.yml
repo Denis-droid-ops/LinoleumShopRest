@@ -25,4 +25,12 @@ server:
   port: 8080
   error:
     include-message: always
+logging:
+  file:
+    path: ../logs
+  level:
+    root: INFO
+  logback:
+    rollingpolicy:
+      max-file-size: 15MB
 
