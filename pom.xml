@@ -20,6 +20,7 @@
 		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
 		<querydsl.version>5.0.0</querydsl.version>
 		<spring-data-envers.version>2.7.17</spring-data-envers.version>
+		<liquibase-core.version>4.24.0</liquibase-core.version>
 
 	</properties>
 	<dependencies>
@@ -98,7 +99,6 @@
 			<version>${querydsl.version}</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-jcache</artifactId>
@@ -117,7 +117,11 @@
 			<version>${spring-data-envers.version}</version>
 		</dependency>
 
-
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>${liquibase-core.version}</version>
+		</dependency>
 
 	</dependencies>
 
