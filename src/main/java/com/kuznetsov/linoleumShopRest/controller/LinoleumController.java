@@ -84,12 +84,23 @@ public class LinoleumController {
                 .orElseThrow(LinoleumNotFoundException::new);
     }
 
-    @GetMapping()
+    @GetMapping
     @Operation(summary = "Find all linoleums by filter(or not), sort them(or not), generate pages")
-    public PageResponse<ReadLinoleumDto> findAll(@RequestBody(required = false) LinoleumFilter filter,
+    public PageResponse<ReadLinoleumDto> findAll(@Parameter(description = "Filter by name or string")
+                                                     @RequestParam(required = false) String name,
+                                                 @Parameter(description = "Filter by protective layer")
+                                                 @RequestParam(required = false) Float protect,
+                                                 @Parameter(description = "Filter by total thickness")
+                                                 @RequestParam(required = false) Float thickness,
+                                                 @Parameter(description = "Filter by minimum price")
+                                                 @RequestParam(required = false) Integer minPrice,
+                                                 @Parameter(description = "Filter by maximum price")
+                                                 @RequestParam(required = false) Integer maxPrice,
                                                  @Parameter(description = "Page and sort parameters")
                                                  @ParameterObject Pageable pageable){
-        return PageResponse.of(linoleumService.findAll(filter,pageable));
+        return PageResponse.of(linoleumService.findAll(
+                new LinoleumFilter(name, protect, thickness, minPrice, maxPrice),
+                pageable));
     }
 
     @GetMapping("/{id}")
