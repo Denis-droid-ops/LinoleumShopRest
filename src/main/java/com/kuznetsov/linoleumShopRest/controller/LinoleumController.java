@@ -69,9 +69,15 @@ public class LinoleumController {
     }
 
     @GetMapping()
-    public PageResponse<ReadLinoleumDto> findAll(@RequestBody(required = false) LinoleumFilter filter,
+    public PageResponse<ReadLinoleumDto> findAll(@RequestParam(required = false) String name,
+                                                 @RequestParam(required = false) Float protect,
+                                                 @RequestParam(required = false) Float thickness,
+                                                 @RequestParam(required = false) Integer minPrice,
+                                                 @RequestParam(required = false) Integer maxPrice,
                                                  Pageable pageable){
-        return PageResponse.of(linoleumService.findAll(filter,pageable));
+        return PageResponse.of(linoleumService.findAll(
+                new LinoleumFilter(name, protect, thickness, minPrice, maxPrice),
+                pageable));
     }
 
     @GetMapping("/{id}")
