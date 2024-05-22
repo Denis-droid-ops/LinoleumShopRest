@@ -19,7 +19,7 @@ import java.util.Optional;
 @Slf4j
 public class ImageService {
 
-    @Value("${app.spring.bucket:/Users/Denis/IdeaProjects/LinoleumShopRest/image}")
+    @Value("${app.spring.bucket:${user.dir}/image}")
     private String bucket;
 
     @SneakyThrows
@@ -54,6 +54,5 @@ public class ImageService {
             Files.delete(imageFullPath);
         }
     }
-
 
 }
