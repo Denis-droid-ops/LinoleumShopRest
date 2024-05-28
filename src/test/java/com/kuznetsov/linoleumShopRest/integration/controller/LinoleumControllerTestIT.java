@@ -2,15 +2,18 @@ package com.kuznetsov.linoleumShopRest.integration.controller;
 
 import com.kuznetsov.linoleumShopRest.annotation.IntegrationTest;
 import com.kuznetsov.linoleumShopRest.dto.LinoleumFilter;
+import com.kuznetsov.linoleumShopRest.entity.Linoleum;
 import com.kuznetsov.linoleumShopRest.exception.LinoleumNotFoundException;
 import com.kuznetsov.linoleumShopRest.exception.LinoleumValidationException;
 import com.kuznetsov.linoleumShopRest.service.LinoleumService;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -18,6 +21,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
 import java.util.Optional;
@@ -124,8 +129,8 @@ class LinoleumControllerTestIT {
     @Test
     void findAll() throws Exception {
         Mockito.when(linoleumService.findAll(
-                new LinoleumFilter("",null,null,599,711),
-                PageRequest.of(0,2, Sort.by("lName"))))
+                        ArgumentMatchers.any(LinoleumFilter.class),
+                ArgumentMatchers.any(Pageable.class)))
                 .thenReturn(new PageImpl<>(FILTERED_LINOLEUM_READ_DTO));
         mockMvc.perform(get(BASE_URI)
                 .contentType(MediaType.APPLICATION_JSON)

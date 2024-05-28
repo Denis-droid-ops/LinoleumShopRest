@@ -20,10 +20,9 @@ import java.util.Collections;
 import java.util.List;
 
 
-
 public final class LinoleumTestData {
 
-    public static String BUCKET = "/Users/Denis/IdeaProjects/LinoleumShopRest/image";
+    public static final String BUCKET = System.getProperty("user.dir")+"/image";
 
     public static final Integer NEWID = 6;
 
@@ -188,8 +187,7 @@ public final class LinoleumTestData {
         MockMultipartFile image = null;
         try {
             FileInputStream fileInputStream =
-                    new FileInputStream("C:\\Users\\Denis\\IdeaProjects\\LinoleumShopRest" +
-                            "\\src\\test\\java\\com\\kuznetsov\\linoleumShopRest\\image\\test.png");
+                    new FileInputStream(System.getProperty("user.dir")+"/src/test/java/com/kuznetsov/linoleumShopRest/image/test.png");
             image = new MockMultipartFile("image",
                             "test.png",
                     MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -204,8 +202,7 @@ public final class LinoleumTestData {
         MockMultipartFile image = null;
         try {
             FileInputStream fileInputStream =
-                    new FileInputStream("C:\\Users\\Denis\\IdeaProjects\\LinoleumShopRest" +
-                            "\\src\\test\\java\\com\\kuznetsov\\linoleumShopRest\\image\\updated.png");
+                    new FileInputStream(System.getProperty("user.dir")+"/src/test/java/com/kuznetsov/linoleumShopRest/image/updated.png");
             image = new MockMultipartFile("image",
                     "updated.png",
                     "multipart/form-data",
@@ -244,4 +241,5 @@ public final class LinoleumTestData {
             Files.delete(UPDATED_IMAGE_FULL_PATH);
         }
     }
+
 }
