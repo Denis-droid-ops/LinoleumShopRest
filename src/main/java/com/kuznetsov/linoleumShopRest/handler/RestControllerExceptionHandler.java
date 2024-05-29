@@ -1,12 +1,13 @@
 package com.kuznetsov.linoleumShopRest.handler;
 
-
 import com.kuznetsov.linoleumShopRest.errorResponse.ImageErrorResponse;
 import com.kuznetsov.linoleumShopRest.errorResponse.LinoleumErrorResponse;
 import com.kuznetsov.linoleumShopRest.errorResponse.LinoleumValidationErrorResponse;
+import com.kuznetsov.linoleumShopRest.errorResponse.RevisionErrorResponse;
 import com.kuznetsov.linoleumShopRest.exception.ImageNotFoundException;
 import com.kuznetsov.linoleumShopRest.exception.LinoleumNotFoundException;
 import com.kuznetsov.linoleumShopRest.exception.LinoleumValidationException;
+import com.kuznetsov.linoleumShopRest.exception.RevisionNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,14 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
         ImageErrorResponse imageErrorResponse =
                 new ImageErrorResponse(ex.getMessage(),System.currentTimeMillis());
         return new ResponseEntity<>(imageErrorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<RevisionErrorResponse> handleException(RevisionNotFoundException ex){
+        log.info("Start handling exception, ex is {}",ex);
+        RevisionErrorResponse revisionErrorResponse =
+                new RevisionErrorResponse(ex.getMessage(),System.currentTimeMillis());
+        return new ResponseEntity<>(revisionErrorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
