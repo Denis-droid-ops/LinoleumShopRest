@@ -1,15 +1,13 @@
 spring:
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;OLD_INFORMATION_SCHEMA=TRUE;
-    username:
-    password:
+    driver: org.postgresql.Driver
+    username: test
+    password: test
 
   jpa:
     properties.hibernate:
-      hbm2ddl.auto: update
-      dialect: org.hibernate.dialect.H2Dialect
+      hbm2ddl.auto: validate
 
   liquibase:
-    enabled: false
+    enabled: true
 

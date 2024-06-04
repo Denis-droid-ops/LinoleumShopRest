@@ -5,6 +5,7 @@ import com.kuznetsov.linoleumShopRest.dto.LinoleumFilter;
 import com.kuznetsov.linoleumShopRest.dto.ReadLinoleumDto;
 import com.kuznetsov.linoleumShopRest.dto.RevisionDto;
 import com.kuznetsov.linoleumShopRest.entity.Linoleum;
+import com.kuznetsov.linoleumShopRest.integration.IntegrationTestConfig;
 import com.kuznetsov.linoleumShopRest.service.ImageService;
 import com.kuznetsov.linoleumShopRest.service.LinoleumService;
 import org.junit.jupiter.api.Test;
@@ -29,11 +30,10 @@ import static com.kuznetsov.linoleumShopRest.testData.LinoleumTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@IntegrationTest
+
 @Transactional
-@Sql(value = {"classpath:sql/populateDB.sql"})
 @ActiveProfiles(value = {"test","noCache"})
-class LinoleumServiceIT {
+class LinoleumServiceIT extends IntegrationTestConfig {
 
     private final LinoleumService linoleumService;
     

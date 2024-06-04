@@ -1,7 +1,9 @@
 databaseChangeLog:
   - include:
-       file: classpath:db/changelog/db.changelog-1.0.sql
+       file: classpath:db/changelog/001-create-tables.sql
   - include:
-       file: classpath:db/changelog/db.changelog-2.0.sql
+       file: classpath:db/changelog/002-create-audit.sql
   - include:
-       file: classpath:db/changelog/db.changelog-2.1.sql
+       file: classpath:db/changelog/003-create-revision.sql
+  - include:
+       file: classpath:db/changelog/004-populate-tables.sql
