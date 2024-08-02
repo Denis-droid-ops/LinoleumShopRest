@@ -13,7 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-@RevisionEntity
+@RevisionEntity(value = MyRevisionListener.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,4 +26,6 @@ public class Revision {
 
     @RevisionTimestamp
     private Long timestamp;
+
+    private String userr;
 }

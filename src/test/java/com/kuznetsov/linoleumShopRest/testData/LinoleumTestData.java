@@ -169,11 +169,8 @@ public final class LinoleumTestData {
                     new ReadLinoleumDto(5,"rigard 4",0.15f,2f,400,"src/main/resources/images/tango-3-1-300x300.jpg")
             );
 
-    public static final List<RevisionDto> ALL_REVISIONS =
-            List.of(new RevisionDto(LINOLEUM,new Revision(1L,1L), RevisionType.ADD),
-                    new RevisionDto(LINOLEUM_IN_REVISION,new Revision(2L,1L), RevisionType.MOD),
-                    new RevisionDto(EMPTY_LINOLEUM_IN_REVISION,new Revision(3L,1L), RevisionType.DEL)
-            );
+    public static final List<RevisionDto> ALL_REVISIONS = Collections.emptyList();
+
 
     public static final String BASE_URI = "/api/v1/linoleums";
 

@@ -99,6 +99,11 @@ public class LinoleumController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updatePrice(@PathVariable("id") Integer id, @RequestParam Integer price){
+        return ResponseEntity.ok(linoleumService.updatePrice(id,price));
+    }
+
     @GetMapping("/{id}/revision")
     public ResponseEntity<Revision<Long, Linoleum>> findRevisionByLinoleumIdAndRevNum(@PathVariable("id") Integer linoleumId,
                                                                      @RequestParam("revNum") Long revisionNumber){
@@ -118,5 +123,9 @@ public class LinoleumController {
         return linoleumService.findAllRevisions();
     }
 
+    @GetMapping("/changes")
+    public List<RevisionDto> findAllChangesByLinoleumId(){
+        return linoleumService.findChangesByLinoleumId(4);
+    }
 
 }

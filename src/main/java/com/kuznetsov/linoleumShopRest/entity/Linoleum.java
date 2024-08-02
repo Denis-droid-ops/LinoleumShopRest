@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 @ToString(exclude = {"rolls","orders"})
 @EqualsAndHashCode(of = "lName")
-@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED,withModifiedFlag = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE)

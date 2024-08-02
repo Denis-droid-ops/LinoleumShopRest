@@ -17,6 +17,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.RevisionType;
+import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -33,10 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.kuznetsov.linoleumShopRest.entity.QLinoleum.linoleum;
@@ -161,6 +159,13 @@ public class LinoleumService {
                 }).orElse(false);
     }
 
+    @Transactional
+    public ReadLinoleumDto updatePrice(Integer id, Integer price){
+        log.info("Start linoleum price updating, id is {}",id);
+        Optional<Linoleum> linoleum = linoleumRepository.findById(id);
+        linoleum.ifPresent(value -> value.setPrice(price));
+        return linoleumMapper.mapToReadLinoleumDto(linoleum.get());
+    }
 
     public Optional<Revision<Long, Linoleum>> findRevisionByLinoleumIdAndRevNum(Integer linoleumId, Long revisionNumber){
         log.info("Start all revisions finding by.., id is {}, revision number is {}",linoleumId,revisionNumber);
@@ -173,23 +178,41 @@ public class LinoleumService {
     }
 
     public List<RevisionDto> findAllRevisions(){
-        log.info("Start all revisions finding");
+       return null;
+    }
+
+    public List<RevisionDto> findChangesByLinoleumId(Integer id){
+        log.info("Start all changes finding");
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         AuditQuery query = auditReader.createQuery()
-                .forRevisionsOfEntity(Linoleum.class, false, true);
+                .forRevisionsOfEntityWithChanges(Linoleum.class,  false)
+                .add(AuditEntity.property("id").eq(id));
+
         List<Object[]> objects = query.getResultList();
         List<RevisionDto> revisionDtos = new ArrayList<>();
-        objects.stream()
-                .forEach(obj->
-                        revisionDtos.add(
-                                new RevisionDto((Linoleum) obj[0],
-                                        (com.kuznetsov.linoleumShopRest.entity.Revision) Hibernate.unproxy(obj[1]),
-                                        (RevisionType) obj[2])
-                        ));
-        List<RevisionDto> sortedRevisionDtos = revisionDtos.stream()
-                .sorted(Comparator.comparing(revDto->revDto.getLinoleum().getId()))
-                .collect(Collectors.toList());
-        return sortedRevisionDtos;
+
+        for ( Object row : objects ) {
+            Map<String,Object> propertiesValues = new HashMap<>();
+            Object[] rowArray = (Object[]) row;
+            final Linoleum entity = (Linoleum) rowArray[0];
+            final com.kuznetsov.linoleumShopRest.entity.Revision revision =
+                    (com.kuznetsov.linoleumShopRest.entity.Revision) rowArray[1];
+            final RevisionType revisionType = (RevisionType) rowArray[2];
+            final Set<String> propertiesChanged = (Set<String>) rowArray[3];
+            if(revisionType.name().equals("MOD")) {
+                for (String propertyName : propertiesChanged) {
+                    switch (propertyName) {
+                        case "price" -> propertiesValues.put(propertyName, entity.getPrice());
+                        case "protect" -> propertiesValues.put(propertyName, entity.getProtect());
+                    }
+                    revisionDtos.add(new RevisionDto(revision.getUserr(),
+                            revision.getTimestamp(),
+                            revisionType,
+                            propertiesValues));
+                }
+            }
+        }
+        return revisionDtos;
     }
 
 

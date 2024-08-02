@@ -19,7 +19,7 @@ import java.util.Optional;
 @Slf4j
 public class ImageService {
 
-    @Value("${app.spring.bucket:/Users/Denis/IdeaProjects/LinoleumShopRest/image}")
+    @Value("${app.spring.bucket:/Users/vilu/IdeaProjects/LinoleumShopRest/image}")
     private String bucket;
 
     @SneakyThrows
